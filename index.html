@@ -1,0 +1,378 @@
+
+
+<html>
+<head>
+<meta name="viewport" content="width=device-width,  initial-scale=1">
+<link rel="stylesheet" href="w3.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-colors-2021.css">
+<body bgcolor="black">
+</head>
+<div class="w3-2021-black">
+
+<p align="right">
+<div class="w3-panel w3-padding-16 w3-bar ">
+<div class="w3-black w3-top w3-hide-small">
+<div class="w3-bar w3-slargew3-black w3-opacity w3-hover-opcity-off" id="myNavbar">
+<ul class="w3-ul">
+   <a href="index.html" class="w3-bar-item w3-button w3-xlarge"><font color="ffffff">Adolfus</a><a href="nosotros.html" class="w3-bar-item w3-button w3-xlarge"> Nosotros</a><a href="contacto.html" class="w3-bar-item w3-button w3-xlarge">Energia</font></a>
+</ul>
+</p>
+</div>
+</div>
+</div>
+
+
+
+<style>
+  .w3-container {
+    position: relative;
+  }
+
+  .w3-panel {
+    position: fixed;
+    bottom: 50%;
+    right: 20px;
+    z-index: 1; 
+	font-family: "Courier New", monospace;
+  }
+</style>
+</head>
+<body>
+
+<div class="w3-container">
+  <div class="w3-panel w3-red w3-display-container w3-card-4 w3-round-large" style="width:200px">
+    <span onclick="this.parentElement.style.display='none'" class="w3-button w3-large w3-display-topright ">&times;</span>
+    <div class="w3-container">
+<button onclick="document.getElementById('id01').style.display='block'" class="w3-button w3-red ">Ordenar!</button>
+<div id="id01" class="w3-modal w3-animate-opacity">
+    <div class="w3-modal-content w3-card-4">
+      <header class="w3-container w3-red"> 
+        <span onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-large w3-display-topright">&times;</span>
+        <h2>Ordenar!</h2>
+      </header>
+      <div class="w3-container w3-2021-ultimate-gra">
+        
+		<div class="w3-container">
+  
+  <div class="w3-card-4">
+
+    <body>
+<font color="ffffff">
+
+
+<form action="Preordenar.php" method="post">
+    <div class="w3-card-4">
+        <center>
+            <select class="w3-select" name="vehiculo">
+                <option value="" disabled selected>Vehiculo</option>
+                <option value="1">Tesla Model 3</option>
+                <option value="2">Mercedes Benz Smart</option>
+                <option value="3">Tesla Model Y</option>
+                <option value="4">Toyota Prius Hibrid</option>
+                <option value="5">Tesla Model S</option>
+                <option value="6">Tesla Model X</option>
+            </select>
+
+            <input class="w3-input w3-border w3-animate-input" type="text" style="width:30%" placeholder="Escribe tu nombres" name="nombre">
+            <input class="w3-input w3-border w3-animate-input" type="text" style="width:30%" placeholder="Escribe tu apellidos" name="apellidos">
+            <input class="w3-input w3-border w3-animate-input" type="email" style="width:30%" placeholder="Escribe tu correo electronico" name="correo">
+            <input class="w3-input w3-border w3-animate-input" type="tel" style="width:30%" placeholder="Escribe tu numero de telefono movil" name="telefono">
+
+            <center><font color="black"><h2>Tarjeta de credito</h2></font></center>
+
+            <input class="w3-input w3-border w3-animate-input" type="text" style="width:30%" placeholder="Escribe el nombre que esta en la tarjeta" name="nombretarj">
+            <input class="w3-input w3-border w3-animate-input" type="text" style="width:30%" placeholder="Escribe el numero de la tarjeta" name="numetarjeta">
+
+            <select class="w3-select" name="mes_expiracion">
+                <option value="" disabled selected>Mes de expiracion</option>
+                    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+	 <option value="4">4</option>
+	  <option value="5">5</option>
+	   <option value="6">6</option>
+	    <option value="7">7</option>
+		 <option value="8">8</option>
+		  <option value="9">9</option>
+		   <option value="10">10</option>
+		    <option value="11">11</option>
+			 <option value="12">12</option>
+            </select>
+
+            <select class="w3-select" name="ano_expiracion">
+                <option value="" disabled selected>Fecha de expiracion</option>
+                  <option value="1">2023</option>
+    <option value="2">2024</option>
+    <option value="3">2025</option>
+	 <option value="4">2026</option>
+	  <option value="5">2027</option>
+	   <option value="6">2028</option>
+	    <option value="7">2029</option>
+		 <option value="8">2030</option>
+		  <option value="9">2031</option>
+		   <option value="10">2032</option>
+		    <option value="11">2033</option>
+			 <option value="12">2034</option>
+			   <option value="13">2036</option>
+		   <option value="14">2036</option>
+		    <option value="15">2037</option>
+			 <option value="16">2038</option>
+            </select>
+
+            <input class="w3-input w3-border w3-animate-input" type="text" style="width:30%" placeholder="CVV" name="CVV">
+            <input class="w3-input w3-border w3-animate-input" type="text" style="width:30%" placeholder="Codigo postal" name="CP">
+
+            <p><button class="w3-btn w3-red">Ordenar</button></p>
+        </center>
+    </div>
+</form>
+
+
+</font>
+</body>
+  </div>
+</div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  </div>
+</div>
+
+
+
+
+ <style>
+body, h1, h2, h3, h4, h5, h6  {
+  font-family: "Courier New", monospace;
+}
+</style>
+
+<div class="w3-display-container w3-animate-opacity">
+  <img src="img/ecocar2.jpg" alt="Boat" style="width:100%;max-height:40%px;">
+  <div class="w3-display-middle w3-text-white w3-jumbo"><img src="img/logo.png"  width="500" height="150"></div>
+  <div class="w3-container w3-display-bottomright w3-text-white w3-large">
+    <h7>Cruz Salda&ntildea Jose Adolfo </h7>
+  </div>
+</div>
+
+
+<div class="w3-card-4 w3-margin">
+  
+<div class="w3-display-container w3-animate-opacity">
+  <img src="img/Tesla.jpg" alt="Boat" style="width:100%;max-height:40%px;">
+  <div class="w3-display-middle w3-text-white w3-jumbo">
+ 
+<body>
+
+<div class="w3-container">
+<h1 class="w3-xxxlarge">Tesla Model 3</h1>
+  </div>
+  </body>
+  </stile>
+  </div>
+  <div class="w3-container w3-display-bottomright w3-text-white w3-large">
+    <a href="model3.html"><button class="w3-button w3-white w3-border w3-round-large w3-padding-large">Explorar</button></a>
+  </div>
+</div>
+  <div class="w3-container">
+    <font color="ffffff"><h1 ><b>Tesla Model 3 </b></h1>
+  </div>
+</div>
+
+
+<div class="w3-card-4 w3-margin">
+  
+<div class="w3-display-container w3-animate-opacity">
+  <img src="img/Smartcar3.jpg" alt="Boat" style="width:100%;max-height:40%px;">
+  <div class="w3-display-middle w3-text-white w3-jumbo">
+ 
+<body>
+
+<div class="w3-container">
+<h1 class="w3-xxxlarge">Mercedes Benz Smart</h1>
+  </div>
+  </body>
+  </stile>
+  </div>
+  <div class="w3-container w3-display-bottomright w3-text-white w3-large">
+    <a href="index.html"><button class="w3-button w3-white w3-border w3-round-large w3-padding-large">Explorar</button></a>
+  </div>
+</div>
+  <div class="w3-container">
+    <font color="ffffff"><h1><b>Mercedes Benz Smart</b></h1>
+  </div>
+</div>
+
+
+<div class="w3-card-4 w3-margin">
+  
+<div class="w3-display-container w3-animate-opacity">
+  <img src="img/teslamodelY.jpg" alt="Boat" style="width:100%;max-height:40%px;">
+  <div class="w3-display-middle w3-text-white w3-jumbo">
+ 
+<body>
+
+<div class="w3-container">
+<h1 class="w3-xxxlarge">Tesla Model Y</h1>
+  </div>
+  </body>
+  </stile>
+  </div>
+  <div class="w3-container w3-display-bottomright w3-text-white w3-large">
+    <a href="index.html"><button class="w3-button w3-white w3-border w3-round-large w3-padding-large">Explorar</button></a>
+  </div>
+</div>
+  <div class="w3-container">
+    <font color="ffffff"><h1><b>Tesla Model Y</b></h1>
+  </div>
+</div>
+
+
+<div class="w3-card-4 w3-margin">
+  
+<div class="w3-display-container w3-animate-opacity">
+  <img src="img/toyotaprius.jpg" alt="Boat" style="width:100%;max-height:40%px;">
+  <div class="w3-display-middle w3-text-white w3-jumbo">
+ 
+<body>
+
+<div class="w3-container">
+<h1 class="w3-xxxlarge">Toyota Prius Hibrid</h1>
+  </div>
+  </body>
+  </stile>
+  </div>
+  <div class="w3-container w3-display-bottomright w3-text-white w3-large">
+    <a href="index.html"><button class="w3-button w3-white w3-border w3-round-large w3-padding-large">Explorar</button></a>
+  </div>
+</div>
+  <div class="w3-container">
+    <font color="ffffff"><h1><b>Toyota Prius Hibrid</b></h1>
+  </div>
+</div>
+
+
+<div class="w3-card-4 w3-margin">
+  
+<div class="w3-display-container w3-animate-opacity">
+  <img src="img/teslamodelS.jpg" alt="Boat" style="width:100%;max-height:40%px;">
+  <div class="w3-display-middle w3-text-white w3-jumbo">
+ 
+<body>
+
+<div class="w3-container">
+<h1 class="w3-xxxlarge">Tesla Model S</h1>
+  </div>
+  </body>
+  </stile>
+  </div>
+  <div class="w3-container w3-display-bottomright w3-text-white w3-large">
+    <a href="index.html"><button class="w3-button w3-white w3-border w3-round-large w3-padding-large">Explorar</button></a>
+  </div>
+</div>
+  <div class="w3-container">
+    <font color="ffffff"><h1><b>Tesla Model S</b></h1>
+  </div>
+</div>
+
+
+<div class="w3-card-4 w3-margin">
+  
+<div class="w3-display-container w3-animate-opacity">
+  <img src="img/modelX2.png" alt="Boat" style="width:100%;max-height:40%px;">
+  <div class="w3-display-middle w3-text-white w3-jumbo">
+ 
+<body>
+
+<div class="w3-container">
+<h1 class="w3-xxxlarge">Tesla Model X</h1>
+  </div>
+  </body>
+  </stile>
+  </div>
+  <div class="w3-container w3-display-bottomright w3-text-white w3-large">
+    <a href="index.html"><button class="w3-button w3-white w3-border w3-round-large w3-padding-large">Explorar</button></a>
+  </div>
+</div>
+  <div class="w3-container">
+    <font color="ffffff"><h1><b>Tesla Model X</b></h1>
+  </div>
+</div>
+
+
+
+
+<div class="w3-container w3-write ">
+<table width="95%" height="30%"; style="padding: 10px">
+<tr>
+<td>
+<ul style="font-family: Century Gothic">
+<font color="ffffff"><h2> Contactate con nosotros </h2>
+<h3>5570668167</h3></font>
+</u1>
+</td>
+<td>
+<ul style="font-family: Arial;">
+<style>
+   a {
+      color:black;
+	  text-decoration: none;
+   }
+</style>
+
+<font color="ffffff"><p style="font-family: Courier New;">Adolfuscompany.us@gmail.com</p></font>
+<div class="w3-container">
+<button onclick="document.getElementById('id01').style.display='block'" class="w3-button w3-write"><font color="ffffff"><p style="font-family: Courier New;">Desarrollo</p></font></button>
+<div id="id01" class="w3-modal w3-animate-opacity">
+    <div class="w3-modal-content w3-card-4">
+      <header class="w3-container w3-sand"> 
+        <span onclick="document.getElementById('id01').style.display='none'" 
+        class="w3-button w3-large w3-display-topright">&times;</span>
+        <h2>Desarrollo</h2>
+      </header>
+      <div class="w3-container w3-2021-ultimate-gra">
+        <table width="95%" height="95%"; style="padding: 10px; background-color: B3BFB4;">
+<tr>
+<div class="w3-container">
+
+
+<td 1  class="w3-center w3-animate-left"><center><img src="img/cecycerro.png" width="400" height="475">
+</div>
+</td>
+<td 2>
+<ul style="font-family: Century Gothic;">
+<div class="w3-container w3-animate-opacity">
+  
+
+ <font color="343232"> <h3> Desarrollado: </h3>
+ <img src="img/logo.png" width="190" height="52">
+<h3> Cruz Salda&ntildea Jose Adolfo </h3>
+<h3> Programacion </h3>
+
+
+</div>
+</font>
+</a>
+</td>
+</table>
+      </div>
+    </div>
+  </div>
+</div>
+
+</td>
+</tr>
+</table>
+<br>
+<br>
+<center>
+  <img src="img/logo.png"  width="200" height="60">
+</center>
+<br>
+<br>
+</div>
+</body>
+</html>
