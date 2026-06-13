@@ -1,188 +1,142 @@
-
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
-<meta name="viewport" content="width=device-width,  initial-scale=1">
-<link rel="stylesheet" href="w3.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-colors-2021.css">
-<body bgcolor="black">
-</head>
-<div class="w3-2021-black">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Configurador Tesla Model 3</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #111; color: white; font-family: "Courier New", monospace; }
+        
+        /* Contenedor principal para el 3D */
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
 
-<p align="right">
-<div class="w3-panel w3-padding-16 w3-bar ">
-<div class="w3-black w3-top w3-hide-small">
-<div class="w3-bar w3-slargew3-black w3-opacity w3-hover-opcity-off" id="myNavbar">
-<ul class="w3-ul">
-   <a href="model3.html" class="w3-bar-item w3-button w3-xlarge"><font color="ffffff">Model 3</a><a href="index.html" class="w3-bar-item w3-button w3-xlarge  w3-right"> Adolfus&nbsp&nbsp&nbsp</font></a>
-</ul>
-</p>
-</div>
-</div>
-</div>
+        /* Panel de configuración superpuesto */
+        #config-panel {
+            position: absolute;
+            top: 80px; /* Debajo de la barra de navegación */
+            left: 20px;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #444;
+        }
 
-<center>
-<video width="65%" height="70%" controls autoplay>
-    <source src="video/Model3video.mp4" type="video/mp4">
-    Tu navegador no soporta la etiqueta de video.
-</video>
-</center>
-
-<style>
-  .w3-container {
-    position: relative;
-  }
-
-  .w3-panel {
-    position: fixed;
-    bottom: 50%;
-    right: 20px;
-    z-index: 1; 
-  }
-</style>
+        .color-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid white;
+            cursor: pointer;
+            margin: 5px;
+            display: inline-block;
+        }
+    </style>
 </head>
 <body>
 
-<div class="w3-container">
-  <div class="w3-panel w3-red w3-display-container w3-card-4 w3-round-large" style="width:200px">
-    <span onclick="this.parentElement.style.display='none'" class="w3-button w3-large w3-display-topright">&times;</span>
-    <a href="index.html"><font color="ffffff"><h3>Contactanos!</h3></font></a>
-  </div>
-</div>
-
-<div class="w3-container">
-  
-<div class="w3-content w3-display-container" style="max-width:800px">
-  <img class="mySlides" src="img/Model3cap3.png" style="width:100%">
-  <img class="mySlides" src="img/Model3cap2.png" style="width:100%">
-  <img class="mySlides" src="img/Model3cap1.png" style="width:100%">
-  <img class="mySlides" src="img/Model3cap4.png" style="width:100%">
-  <img class="mySlides" src="img/Model3cap5.png" style="width:100%">
-  <img class="mySlides" src="img/Model3cap6.png" style="width:100%"> <!-- Nueva imagen -->
-  <img class="mySlides" src="img/Model3cap7.png" style="width:100%"> <!-- Nueva imagen -->
-  <img class="mySlides" src="img/Model3cap8.png" style="width:100%"> <!-- Nueva imagen -->
-  
-  <div class="w3-center w3-container w3-section w3-large w3-text-white w3-display-bottommiddle" style="width:100%">
-    <div class="w3-left w3-hover-text-khaki" onclick="plusDivs(-1)">&#10094;</div>
-    <div class="w3-right w3-hover-text-khaki" onclick="plusDivs(1)">&#10095;</div>
-    <span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(1)"></span>
-    <span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(2)"></span>
-    <span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(3)"></span>
-    <span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(4)"></span>
-    <span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(5)"></span>
-    <span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(6)"></span> <!-- Nuevo indicador -->
-    <span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(7)"></span> <!-- Nuevo indicador -->
-    <span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(8)"></span> <!-- Nuevo indicador -->
-  </div>
-</div>
-
-<script>
-var slideIndex = 1;
-showDivs(slideIndex);
-
-function plusDivs(n) {
-  showDivs(slideIndex += n);
-}
-
-function currentDiv(n) {
-  showDivs(slideIndex = n);
-}
-
-function showDivs(n) {
-  var i;
-  var x = document.getElementsByClassName("mySlides");
-  var dots = document.getElementsByClassName("demo");
-  if (n > x.length) {slideIndex = 1}
-  if (n < 1) {slideIndex = x.length}
-  for (i = 0; i < x.length; i++) {
-    x[i].style.display = "none";  
-  }
-  for (i = 0; i < dots.length; i++) {
-    dots[i].className = dots[i].className.replace(" w3-white", "");
-  }
-  x[slideIndex-1].style.display = "block";  
-  dots[slideIndex-1].className += " w3-white";
-}
-</script>
-
-</body>
-
-
-
-
-
-
-
-
-
-<div class="w3-container w3-write ">
-<table width="95%" height="30%"; style="padding: 10px">
-<tr>
-<td>
-<ul style="font-family: Century Gothic">
-<font color="ffffff"><h2> Contactate con nosotros </h2>
-<h3>5570668167</h3></font>
-</u1>
-</td>
-<td>
-<ul style="font-family: Arial;">
-<style>
-   a {
-      color:black;
-	  text-decoration: none;
-   }
-</style>
-
-<font color="ffffff"><p style="font-family: Courier New;">Adolfuscompany.us@gmail.com</p></font>
-<div class="w3-container">
-<button onclick="document.getElementById('id01').style.display='block'" class="w3-button w3-write"><font color="ffffff"><p style="font-family: Courier New;">Desarrollo</p></font></button>
-<div id="id01" class="w3-modal w3-animate-opacity">
-    <div class="w3-modal-content w3-card-4">
-      <header class="w3-container w3-sand"> 
-        <span onclick="document.getElementById('id01').style.display='none'" 
-        class="w3-button w3-large w3-display-topright">&times;</span>
-        <h2>Desarrollo</h2>
-      </header>
-      <div class="w3-container w3-2021-ultimate-gra">
-        <table width="95%" height="95%"; style="padding: 10px; background-color: B3BFB4;">
-<tr>
-<div class="w3-container">
-
-
-<td 1  class="w3-center w3-animate-left"><center><img src="img/cecycerro.png" width="400" height="475">
-</div>
-</td>
-<td 2>
-<ul style="font-family: Century Gothic;">
-<div class="w3-container w3-animate-opacity">
-  
-
- <font color="343232"> <h3> Desarrollado: </h3>
- <img src="img/logo.png" width="190" height="52">
-<h3> Cruz Salda&ntildea Jose Adolfo </h3>
-<h3> Programacion </h3>
-
-
-</div>
-</font>
-</a>
-</td>
-</table>
-      </div>
+    <div class="w3-top" style="z-index: 20;">
+        <div class="w3-bar w3-black w3-opacity-min w3-padding">
+            <a href="index.html" class="w3-bar-item w3-button w3-xlarge">Adolfus</a>
+            <a href="nosotros.html" class="w3-bar-item w3-button w3-xlarge">Nosotros</a>
+            <a href="contacto.html" class="w3-bar-item w3-button w3-xlarge">Energia</a>
+        </div>
     </div>
-  </div>
-</div>
 
-</td>
-</tr>
-</table>
-<br>
-<br>
-<center>
-  <img src="img/logo.png"  width="200" height="60">
-</center>
-<br>
-<br>
-</div>
+    <div id="config-panel">
+        <h3>Personaliza tu Tesla</h3>
+        <p>Elige tu pintura:</p>
+        <div class="color-btn" style="background-color: #aaaaaa;" onclick="cambiarColor(0xaaaaaa)"></div> <div class="color-btn" style="background-color: #aa0000;" onclick="cambiarColor(0xaa0000)"></div> <div class="color-btn" style="background-color: #0000aa;" onclick="cambiarColor(0x000033)"></div> <div class="color-btn" style="background-color: #111111;" onclick="cambiarColor(0x111111)"></div> <br><br>
+        <button class="w3-button w3-red w3-round" onclick="alert('¡Has guardado tu configuración!')">Guardar Configuración</button>
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // Variables globales para poder cambiar el color desde los botones HTML
+        let materialCarroceria;
+
+        // Configuración básica
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(6, 3, 7);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        // Luces (Estilo Showroom)
+        scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+        const dirLight = new THREE.DirectionalLight(0xffffff, 2);
+        dirLight.position.set(5, 10, 5);
+        scene.add(dirLight);
+
+        // Material principal que cambiaremos de color
+        materialCarroceria = new THREE.MeshStandardMaterial({ 
+            color: 0xaaaaaa, // Plata por defecto
+            metalness: 0.8, 
+            roughness: 0.2 
+        });
+
+        // Construcción del auto (Mismo código de geometría que hicimos antes)
+        const carGroup = new THREE.Group();
+        const base = new THREE.Mesh(new THREE.BoxGeometry(4.5, 0.8, 2), materialCarroceria);
+        base.position.y = 0.8;
+        carGroup.add(base);
+
+        const roof = new THREE.Mesh(new THREE.CylinderGeometry(0, 1.5, 1.2, 4), materialCarroceria);
+        roof.rotation.y = Math.PI / 4; 
+        roof.scale.set(1.6, 1, 0.8);
+        roof.position.set(-0.3, 1.8, 0);
+        carGroup.add(roof);
+
+        // Ruedas negras
+        const wheelMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.9 });
+        const wheelGeo = new THREE.CylinderGeometry(0.5, 0.5, 0.3, 32);
+        function createWheel(x, z) {
+            const w = new THREE.Mesh(wheelGeo, wheelMat);
+            w.rotation.x = Math.PI / 2; w.position.set(x, 0.5, z); carGroup.add(w);
+        }
+        createWheel(1.4, 1.1); createWheel(1.4, -1.1); createWheel(-1.4, 1.1); createWheel(-1.4, -1.1); 
+
+        scene.add(carGroup);
+
+        // Controles de cámara
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+
+        // Función que conecta los botones HTML con Three.js
+        window.cambiarColor = function(colorHexadecimal) {
+            materialCarroceria.color.setHex(colorHexadecimal);
+        };
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
 </body>
 </html>
