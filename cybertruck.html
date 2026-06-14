@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Configurador Tesla Cybertruck</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #eeeeee; color: white; font-family: "Courier New", monospace; }
+        #canvas-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
+        #config-panel {
+            position: absolute; top: 70px; left: 20px; z-index: 10;
+            background: rgba(15, 15, 15, 0.9); padding: 20px;
+            border-radius: 12px; border: 1px solid #333;
+            width: 340px; max-height: 85vh; overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        h2, h3, p { margin-top: 0; margin-bottom: 10px; }
+        #precio-total {
+            font-size: 28px; font-weight: bold; color: #4CAF50;
+            margin-bottom: 20px; border-bottom: 1px solid #444; padding-bottom: 10px;
+        }
+        .opcion-grupo { margin-bottom: 20px; }
+        .color-btn {
+            width: 35px; height: 35px; border-radius: 50%;
+            border: 2px solid #555; cursor: pointer; margin: 0 5px 5px 0;
+            display: inline-block; transition: 0.2s;
+        }
+        .color-btn:hover { transform: scale(1.1); }
+        .color-btn.activo { border: 3px solid #ffffff; box-shadow: 0 0 10px rgba(255,255,255,0.8); }
+        .btn-opcion {
+            background-color: #333; color: white; border: 1px solid #555;
+            padding: 8px 12px; margin: 2px; cursor: pointer; border-radius: 5px; transition: 0.2s;
+        }
+        .btn-opcion.activo { background-color: #fff; color: #000; font-weight: bold; }
+        #resumen-caja {
+            background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px;
+            font-size: 12px; margin-bottom: 15px; color: #ccc;
+        }
+        #resumen-caja ul { padding-left: 20px; margin: 5px 0 0 0; }
+    </style>
+</head>
+<body>
+
+    <div class="w3-top" style="z-index: 20;">
+        <div class="w3-bar w3-black w3-opacity-min w3-padding">
+            <a href="index.html" class="w3-bar-item w3-button w3-xlarge">Adolfus</a>
+            <a href="nosotros.html" class="w3-bar-item w3-button w3-xlarge">Nosotros</a>
+        </div>
+    </div>
+
+    <div id="config-panel">
+        <h2>Cybertruck</h2>
+        <div id="precio-total">$1,600,000 MXN</div> 
+
+        <div class="opcion-grupo">
+            <p><strong>Acabado Exterior</strong></p>
+            <div class="color-btn activo" style="background-color: #999999;" onclick="cambiarPintura(0xaaaaaa, 0.35, 1.0, 'Acero Inoxidable', 0, this)"></div>
+            <div class="color-btn" style="background-color: #111111;" onclick="cambiarPintura(0x111111, 0.8, 0.1, 'Wrap Negro Mate', 80000, this)"></div>
+            <div class="color-btn" style="background-color: #eeeeee;" onclick="cambiarPintura(0xeeeeee, 0.5, 0.1, 'Wrap Blanco Satinado', 80000, this)"></div>
+        </div>
+
+        <div class="opcion-grupo">
+            <p><strong>Interior</strong></p>
+            <button class="btn-opcion activo" id="btn-int-negro" onclick="cambiarInterior(0x111111, 'Negro Total', 0)">Negro</button>
+            <button class="btn-opcion" id="btn-int-blanco" onclick="cambiarInterior(0xffffff, 'Blanco Premium', 25000)">Blanco (+$25k)</button>
+        </div>
+
+        <div class="opcion-grupo">
+            <p><strong>Software</strong></p>
+            <label style="cursor: pointer;">
+                <input type="checkbox" id="chk-autopilot" onchange="toggleAutopilot(this)" style="margin-right: 8px;">
+                Full Self-Driving (+$177,000)
+            </label>
+        </div>
+
+        <div id="resumen-caja">
+            <strong>Resumen de tu configuración:</strong>
+            <ul id="lista-resumen">
+                <li>Cybertruck AWD</li>
+                <li id="res-pintura">Acabado: Acero Inoxidable</li>
+                <li id="res-interior">Interior: Negro Total</li>
+                <li id="res-autopilot" style="display: none;">Incluye: Full Self-Driving</li>
+            </ul>
+        </div>
+
+        <button class="w3-button w3-red w3-round w3-block" onclick="alert('¡Orden enviada a producción!')">Realizar Pedido</button>
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+        const estado = { precioBase: 1600000, precioPintura: 0, precioInterior: 0, precioAutopilot: 0 };
+        const formateadorMoneda = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
+
+        function actualizarPrecioYResumen() {
+            const total = estado.precioBase + estado.precioPintura + estado.precioInterior + estado.precioAutopilot;
+            document.getElementById('precio-total').innerText = formateadorMoneda.format(total);
+        }
+
+        const materialesPintura = []; 
+        const materialesInterior = [];
+
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xdddddd); 
+
+        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(5, 2, 6);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true; 
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping; 
+        renderer.toneMappingExposure = 1.0;
+        container.appendChild(renderer.domElement);
+
+        const pmremGenerator = new THREE.PMREMGenerator(renderer);
+        scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7); 
+        scene.add(ambientLight);
+
+        const spotLight = new THREE.SpotLight(0xffffff, 5); 
+        spotLight.position.set(2, 8, 5);
+        spotLight.castShadow = true;
+        scene.add(spotLight);
+
+        const floorGeometry = new THREE.PlaneGeometry(100, 100);
+        const floorMaterial = new THREE.ShadowMaterial({ opacity: 0.5 }); 
+        const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+        floor.rotation.x = -Math.PI / 2;
+        floor.receiveShadow = true;
+        scene.add(floor);
+
+        const loader = new GLTFLoader();
+        let modeloAuto;
+
+        loader.load('cybertruck.glb', function (gltf) {
+            modeloAuto = gltf.scene;
+            modeloAuto.position.y = 0.8; 
+
+            modeloAuto.traverse((child) => {
+                if (child.isMesh) {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                    
+                    let nombreMat = child.material.name.toLowerCase();
+                    let nombrePieza = child.name.toLowerCase();
+                    
+                    // 1. CARROCERÍA (Ahora con parámetros iniciales de Acero)
+                    if (nombreMat.includes('bodyl')) {
+                        child.material = child.material.clone(); 
+                        child.material.metalness = 1.0; // 100% Metal
+                        child.material.roughness = 0.35; // Cepillado
+                        child.material.clearcoat = 0.0; 
+                        child.material.map = null; // Quitamos texturas base
+                        materialesPintura.push(child.material);
+                    }
+                    
+                    // 2. INTERIOR (Eliminamos la textura para que el blanco funcione)
+                    if (nombreMat === 'material' || nombrePieza.includes('_in_')) {
+                        child.material = child.material.clone();
+                        child.material.map = null; // <-- ESTA ES LA MAGIA QUE ARREGLA EL COLOR
+                        child.material.color.setHex(0x111111);
+                        materialesInterior.push(child.material);
+                    }
+                }
+            });
+
+            scene.add(modeloAuto);
+        });
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.maxPolarAngle = Math.PI / 2 - 0.05; 
+
+        // FUNCIONES ACTUALIZADAS
+        window.cambiarPintura = function(colorHex, texturaMate, metalico, nombreColor, precioAdicional, botonElemento) {
+            materialesPintura.forEach(mat => { 
+                mat.color.setHex(colorHex); 
+                mat.roughness = texturaMate; 
+                mat.metalness = metalico; // Alteramos qué tan metálico es
+                mat.needsUpdate = true; 
+            });
+            
+            document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('activo'));
+            botonElemento.classList.add('activo');
+            
+            estado.precioPintura = precioAdicional;
+            document.getElementById('res-pintura').innerText = `Acabado: ${nombreColor}`;
+            actualizarPrecioYResumen();
+        };
+
+        window.cambiarInterior = function(colorHex, nombre, precioAdicional) {
+            materialesInterior.forEach(mat => { mat.color.setHex(colorHex); mat.needsUpdate = true; });
+            
+            document.getElementById('btn-int-negro').classList.toggle('activo', colorHex === 0x111111);
+            document.getElementById('btn-int-blanco').classList.toggle('activo', colorHex === 0xffffff);
+
+            estado.precioInterior = precioAdicional;
+            document.getElementById('res-interior').innerText = `Interior: ${nombre}`;
+            actualizarPrecioYResumen();
+        };
+
+        window.toggleAutopilot = function(checkbox) {
+            estado.precioAutopilot = checkbox.checked ? 177000 : 0;
+            document.getElementById('res-autopilot').style.display = checkbox.checked ? 'list-item' : 'none';
+            actualizarPrecioYResumen();
+        };
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if(modeloAuto) modeloAuto.rotation.y += 0.001;
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
