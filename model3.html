@@ -10,7 +10,7 @@
         
         #canvas-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
 
-        /* Panel de configuración mejorado (UI/UX) */
+        /* Panel de configuración */
         #config-panel {
             position: absolute; top: 70px; left: 20px; z-index: 10;
             background: rgba(15, 15, 15, 0.9); padding: 20px;
@@ -21,7 +21,7 @@
 
         h2, h3, p { margin-top: 0; margin-bottom: 10px; }
         
-        /* 1. PRECIO DINÁMICO: Diseño del texto */
+        /*  PRECIO DINÁMICO */
         #precio-total {
             font-size: 28px; font-weight: bold; color: #4CAF50;
             margin-bottom: 20px; border-bottom: 1px solid #444; padding-bottom: 10px;
@@ -29,7 +29,7 @@
 
         .opcion-grupo { margin-bottom: 20px; }
 
-        /* 3. UX/UI: Estado activo en botones */
+        /*  Estado activo en botones */
         .color-btn {
             width: 35px; height: 35px; border-radius: 50%;
             border: 2px solid #555; cursor: pointer; margin: 0 5px 5px 0;
@@ -43,8 +43,6 @@
             padding: 8px 12px; margin: 2px; cursor: pointer; border-radius: 5px; transition: 0.2s;
         }
         .btn-opcion.activo { background-color: #fff; color: #000; font-weight: bold; }
-
-        /* Resumen */
         #resumen-caja {
             background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px;
             font-size: 12px; margin-bottom: 15px; color: #ccc;
@@ -156,13 +154,13 @@
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.shadowMap.enabled = true; // 4. REALISMO: Sombras activadas
+        renderer.shadowMap.enabled = true; 
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         renderer.toneMapping = THREE.ACESFilmicToneMapping; 
         renderer.toneMappingExposure = 1.0;
         container.appendChild(renderer.domElement);
 
-        // 4. REALISMO: Entorno de reflejos (HDRI)
+        //  REALISMO: Entorno de reflejos (HDRI)
         const pmremGenerator = new THREE.PMREMGenerator(renderer);
         scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
 
@@ -172,11 +170,11 @@
         const spotLight = new THREE.SpotLight(0xffffff, 5); 
         spotLight.position.set(2, 8, 5);
         spotLight.castShadow = true;
-        spotLight.shadow.mapSize.width = 2048; // Alta resolución de sombras
+        spotLight.shadow.mapSize.width = 2048;
         spotLight.shadow.mapSize.height = 2048;
         scene.add(spotLight);
 
-        // 4. REALISMO: Plano de sombras invisible (Mejor que un suelo gris opaco)
+        //  REALISMO: Plano de sombras invisible 
         const floorGeometry = new THREE.PlaneGeometry(100, 100);
         // ShadowMaterial hace que el piso sea invisible pero SÍ dibuja la sombra del auto
         const floorMaterial = new THREE.ShadowMaterial({ opacity: 0.5 }); 
@@ -200,7 +198,7 @@
                     
                     let nombreMat = child.material.name.toLowerCase();
                     
-                    // 1. Atrapar Pintura
+                    // Atrapar Pintura
                     if (nombreMat.includes('primary') || nombreMat.includes('chassis')) {
                         child.material = child.material.clone(); 
                         child.material.metalness = 0.8; 
@@ -210,15 +208,14 @@
                         materialesPintura.push(child.material);
                     }
                     
-                    // 2. Atrapar Interior (Basado en el escáner: Seat_Leather o Putih)
+                    //  Atrapar Interior 
                     if (nombreMat.includes('seat') || nombreMat.includes('leather') || nombreMat.includes('putih')) {
                         child.material = child.material.clone();
-                        // Forzamos a que inicie en color negro
                         child.material.color.setHex(0x111111);
                         materialesInterior.push(child.material);
                     }
 
-                    // 3. Atrapar Rines (Basado en el escáner: hub_)
+                    // Atrapar Rines 
                     if (nombreMat.includes('hub_')) {
                         child.material = child.material.clone();
                         materialesRines.push(child.material);
@@ -249,28 +246,23 @@
             actualizarPrecioYResumen();
         };
 
-        window.cambiarRines = function(tipo, precioAdicional) {
-            // Nota: Como el modelo .glb suele traer solo 1 diseño 3D físico, 
-            // simulamos el cambio pintando los rines metálicos brillantes o negros deportivos mate.
+        window.cambiarRines = function(tipo, precioAdicional) {.
             let colorNuevo = tipo === 'estandar' ? 0xcccccc : 0x111111;
-            let roughnessNuevo = tipo === 'estandar' ? 0.4 : 0.8; // Los deportivos son más mate
+            let roughnessNuevo = tipo === 'estandar' ? 0.4 : 0.8; 
 
             materialesRines.forEach(mat => { 
                 mat.color.setHex(colorNuevo); 
                 mat.roughness = roughnessNuevo;
                 mat.needsUpdate = true; 
             });
-
             // UI de botones
             document.getElementById('btn-rin-std').classList.toggle('activo', tipo === 'estandar');
             document.getElementById('btn-rin-spt').classList.toggle('activo', tipo === 'sport');
-
             // Estado
             estado.precioRines = precioAdicional;
             document.getElementById('res-rines').innerText = tipo === 'estandar' ? 'Rines: Estándar 18"' : 'Rines: Sport Negros 19"';
             actualizarPrecioYResumen();
         };
-
         window.cambiarInterior = function(colorHex, nombre, precioAdicional) {
             materialesInterior.forEach(mat => { mat.color.setHex(colorHex); mat.needsUpdate = true; });
             
