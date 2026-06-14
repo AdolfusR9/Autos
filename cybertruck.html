@@ -136,22 +136,37 @@
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.7); 
         scene.add(ambientLight);
 
-        const spotLight = new THREE.SpotLight(0xffffff, 5); 
-        spotLight.position.set(2, 8, 5);
-        spotLight.castShadow = true;
-        scene.add(spotLight);
+        // ================= LUCES Y SOMBRAS PREMIUM =================
+        const mainLight = new THREE.DirectionalLight(0xffffff, 4); 
+        mainLight.position.set(5, 10, 7);
+        mainLight.castShadow = true;
 
+        mainLight.shadow.mapSize.width = 2048; 
+        mainLight.shadow.mapSize.height = 2048;
+
+        mainLight.shadow.camera.near = 0.1;
+        mainLight.shadow.camera.far = 30;
+        mainLight.shadow.camera.left = -5;
+        mainLight.shadow.camera.right = 5;
+        mainLight.shadow.camera.top = 5;
+        mainLight.shadow.camera.bottom = -5;
+
+        mainLight.shadow.bias = -0.0005; 
+        scene.add(mainLight);
+
+        // Piso de sombra
         const floorGeometry = new THREE.PlaneGeometry(100, 100);
-        const floorMaterial = new THREE.ShadowMaterial({ opacity: 0.5 }); 
+        const floorMaterial = new THREE.ShadowMaterial({ opacity: 0.3 }); 
         const floor = new THREE.Mesh(floorGeometry, floorMaterial);
         floor.rotation.x = -Math.PI / 2;
         floor.receiveShadow = true;
         scene.add(floor);
 
+        // ================= CARGAR MODELO =================
         const loader = new GLTFLoader();
         let modeloAuto;
 
-        loader.load('cybertruck.glb', function (gltf) {
+        loader.load('cybertruck.glb', function (gltf) { 
             modeloAuto = gltf.scene;
             modeloAuto.position.y = 0.8; 
 
@@ -161,22 +176,21 @@
                     child.receiveShadow = true;
                     
                     let nombreMat = child.material.name.toLowerCase();
-                    let nombrePieza = child.name.toLowerCase();
                     
-                    // 1. CARROCERÍA (Ahora con parámetros iniciales de Acero)
-                    if (nombreMat.includes('bodyl')) {
+                    // 1. CARROCERÍA
+                    if (nombreMat.includes('lambert1')) {
                         child.material = child.material.clone(); 
-                        child.material.metalness = 1.0; // 100% Metal
-                        child.material.roughness = 0.35; // Cepillado
+                        child.material.metalness = 1.0; 
+                        child.material.roughness = 0.35; 
                         child.material.clearcoat = 0.0; 
-                        child.material.map = null; // Quitamos texturas base
+                        child.material.map = null; 
                         materialesPintura.push(child.material);
                     }
                     
-                    // 2. INTERIOR (Eliminamos la textura para que el blanco funcione)
-                    if (nombreMat === 'material' || nombrePieza.includes('_in_')) {
+                    // 2. INTERIOR
+                    if (nombreMat.includes('seat')) {
                         child.material = child.material.clone();
-                        child.material.map = null; // <-- ESTA ES LA MAGIA QUE ARREGLA EL COLOR
+                        child.material.map = null; 
                         child.material.color.setHex(0x111111);
                         materialesInterior.push(child.material);
                     }
@@ -190,12 +204,12 @@
         controls.enableDamping = true;
         controls.maxPolarAngle = Math.PI / 2 - 0.05; 
 
-        // FUNCIONES ACTUALIZADAS
+        // ================= FUNCIONES =================
         window.cambiarPintura = function(colorHex, texturaMate, metalico, nombreColor, precioAdicional, botonElemento) {
             materialesPintura.forEach(mat => { 
                 mat.color.setHex(colorHex); 
                 mat.roughness = texturaMate; 
-                mat.metalness = metalico; // Alteramos qué tan metálico es
+                mat.metalness = metalico;
                 mat.needsUpdate = true; 
             });
             
