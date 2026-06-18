@@ -22,7 +22,7 @@
             font-size: 28px; font-weight: bold; color: #4CAF50;
             margin-bottom: 20px; border-bottom: 1px solid #444; padding-bottom: 10px;
         }
-        .opcion-grupo { margin-bottom: 20px; }
+        .opcion-grupo { margin-bottom: 15px; }
         
         .color-btn {
             width: 35px; height: 35px; border-radius: 50%;
@@ -35,6 +35,7 @@
         .btn-opcion {
             background-color: #333; color: white; border: 1px solid #555;
             padding: 8px 12px; margin: 2px; cursor: pointer; border-radius: 5px; transition: 0.2s;
+            font-size: 13px;
         }
         .btn-opcion.activo { background-color: #fff; color: #000; font-weight: bold; }
         
@@ -59,9 +60,9 @@
         <div id="precio-total">$880,000 MXN</div> 
 
         <div class="opcion-grupo">
-            <p><strong>Vista de Inspección</strong></p>
+            <p><strong>Inspección</strong></p>
             <button class="btn-opcion activo" id="btn-vista-ext" onclick="cambiarVista('exterior')">Exterior</button>
-            <button class="btn-opcion" id="btn-vista-int" onclick="cambiarVista('interior')">Interior (Cabina)</button>
+            <button class="btn-opcion" id="btn-vista-int" onclick="cambiarVista('interior')">Interior</button>
         </div>
 
         <div class="opcion-grupo">
@@ -79,45 +80,46 @@
             <button class="btn-opcion" id="btn-rin-spt" onclick="cambiarRines('sport', 35000)">Sport Negros 19" (+$35k)</button>
         </div>
 
+        <!-- REQUISITO DEL PROFE: Interior Beige agregado -->
         <div class="opcion-grupo">
             <p><strong>Interior</strong></p>
             <button class="btn-opcion activo" id="btn-int-negro" onclick="cambiarInterior(0x111111, 'Negro Total', 0)">Negro</button>
             <button class="btn-opcion" id="btn-int-blanco" onclick="cambiarInterior(0xffffff, 'Blanco Premium', 21000)">Blanco (+$21k)</button>
+            <button class="btn-opcion" id="btn-int-beige" onclick="cambiarInterior(0xd5cabd, 'Beige Arena', 21000)">Beige (+$21k)</button>
         </div>
 
         <div class="opcion-grupo">
-            <p><strong>Software</strong></p>
-            <label style="cursor: pointer;">
+            <label style="cursor: pointer; font-size: 13px;">
                 <input type="checkbox" id="chk-autopilot" onchange="toggleAutopilot(this)" style="margin-right: 8px;">
                 Autopilot Avanzado (+$177,000)
             </label>
         </div>
 
-        <div class="opcion-grupo" style="border-top: 1px solid #444; padding-top: 15px; margin-top: 15px;">
+        <div class="opcion-grupo" style="border-top: 1px solid #444; padding-top: 10px; margin-top: 10px;">
             <p><strong>Método de Pago</strong></p>
-            <select id="tipo-pago" class="w3-select w3-round" style="background:#333; color:white; border:1px solid #555; padding:8px;" onchange="toggleMetodoPago(this.value)">
-                <option value="contado">Pago de Contado</option>
+            <select id="tipo-pago" class="w3-select w3-round" style="background:#333; color:white; border:1px solid #555; padding:5px;" onchange="toggleMetodoPago(this.value)">
+                <option value="contado">De Contado</option>
                 <option value="financiamiento">Financiamiento Mensual</option>
             </select>
         </div>
 
         <div id="panel-financiamiento" style="display: none; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
             <div class="opcion-grupo">
-                <p><small>Porcentaje de Enganche</small></p>
+                <p><small>Enganche</small></p>
                 <select id="select-enganche" class="w3-select w3-round" style="background:#222; color:white; border:1px solid #555; padding:5px;" onchange="actualizarFinanciamiento()">
-                    <option value="0.20">20% de Enganche</option>
-                    <option value="0.30">30% de Enganche</option>
-                    <option value="0.50">50% de Enganche</option>
+                    <option value="0.20">20%</option>
+                    <option value="0.30">30%</option>
+                    <option value="0.50">50%</option>
                 </select>
             </div>
             <div class="opcion-grupo">
-                <p><small>Plazo de Financiamiento</small></p>
+                <p><small>Plazo</small></p>
                 <select id="select-plazo" class="w3-select w3-round" style="background:#222; color:white; border:1px solid #555; padding:5px;" onchange="actualizarFinanciamiento()">
-                    <option value="12">12 Meses (11.9% Interés Anual)</option>
-                    <option value="24">24 Meses (12.5% Interés Anual)</option>
-                    <option value="36">36 Meses (13.2% Interés Anual)</option>
-                    <option value="48">48 Meses (13.9% Interés Anual)</option>
-                    <option value="60">60 Meses (14.5% Interés Anual)</option>
+                    <option value="12">12 Meses (11.9% Int.)</option>
+                    <option value="24">24 Meses (12.5% Int.)</option>
+                    <option value="36">36 Meses (13.2% Int.)</option>
+                    <option value="48">48 Meses (13.9% Int.)</option>
+                    <option value="60">60 Meses (14.5% Int.)</option>
                 </select>
             </div>
         </div>
@@ -133,7 +135,26 @@
             </ul>
         </div>
 
-        <button class="w3-button w3-red w3-round w3-block" onclick="alert('¡Orden enviada a producción!')">Realizar Pedido</button>
+        <!-- REQUISITO DEL PROFE: Abrir el Modal de datos -->
+        <button class="w3-button w3-red w3-round w3-block" onclick="document.getElementById('modal-factura').style.display='block'">Realizar Pedido</button>
+    </div>
+
+    <!-- REQUISITO DEL PROFE: MODAL DE FORMULARIO -->
+    <div id="modal-factura" class="w3-modal" style="z-index: 100;">
+        <div class="w3-modal-content w3-card-4 w3-animate-top" style="max-width:500px; background:#222; color:white; border-radius: 10px; overflow: hidden;">
+            <header class="w3-container w3-red">
+                <span onclick="document.getElementById('modal-factura').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+                <h3>Datos de Facturación</h3>
+            </header>
+            <div class="w3-container w3-padding-16">
+                <p>Por favor llena tus datos para generar tu comprobante.</p>
+                <input id="f-nombre" class="w3-input w3-border w3-round w3-margin-bottom" type="text" placeholder="Nombre Completo" style="background:#333; color:white;">
+                <input id="f-correo" class="w3-input w3-border w3-round w3-margin-bottom" type="email" placeholder="Correo Electrónico" style="background:#333; color:white;">
+                <input id="f-telefono" class="w3-input w3-border w3-round w3-margin-bottom" type="tel" placeholder="Teléfono" style="background:#333; color:white;">
+                <input id="f-direccion" class="w3-input w3-border w3-round w3-margin-bottom" type="text" placeholder="Dirección de Envío" style="background:#333; color:white;">
+                <button class="w3-button w3-green w3-block w3-round" onclick="generarFactura()">Generar Factura y Finalizar</button>
+            </div>
+        </div>
     </div>
 
     <div id="canvas-container"></div>
@@ -147,7 +168,7 @@
         }
     </script>
 
-<script type="module">
+    <script type="module">
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -155,7 +176,7 @@
 
         // ================= ESTADO DE LA APLICACIÓN =================
         const estado = {
-            precioBase: 880000,
+            precioBase: 880000, // Precio ajustado para Model 3
             precioPintura: 0,
             precioRines: 0,
             precioInterior: 0,
@@ -169,16 +190,17 @@
         };
 
         const formateadorMoneda = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
+        
+        // Variable global para guardar el texto total a cobrar en la factura
+        let totalImpresion = "";
 
         function actualizarPrecioYResumen() {
-            // 1. Calculamos el valor del auto con sus accesorios
             const totalAuto = estado.precioBase + estado.precioPintura + estado.precioRines + estado.precioInterior + estado.precioAutopilot;
             
             const listaResumen = document.getElementById('lista-resumen');
             const nodoPrevio = document.getElementById('res-financiero');
             if (nodoPrevio) nodoPrevio.remove();
 
-            // 2. Lógica Dinámica de Precios
             if (estado.metodoPago === 'financiamiento') {
                 const engancheDinero = totalAuto * estado.porcentajeEnganche;
                 const montoFinanciar = totalAuto - engancheDinero;
@@ -186,15 +208,13 @@
                 const tasaMensual = tasaAnual / 12;
                 
                 const pagoMensual = montoFinanciar * ( (tasaMensual * Math.pow(1 + tasaMensual, estado.mesesPlazo)) / (Math.pow(1 + tasaMensual, estado.mesesPlazo) - 1) );
-
-                // ACTUALIZACIÓN EXTRA: Calculamos el costo final con intereses
                 const costoTotalCredito = engancheDinero + (pagoMensual * estado.mesesPlazo);
 
-                // Mostramos el costo final financiado en el encabezado
                 document.getElementById('precio-total').innerHTML = `
                     <span style="font-size: 14px; color: #aaa;">Costo Total Financiado:</span><br>
                     ${formateadorMoneda.format(costoTotalCredito)}
                 `;
+                totalImpresion = formateadorMoneda.format(costoTotalCredito);
 
                 const liFinanciamiento = document.createElement('li');
                 liFinanciamiento.id = 'res-financiero';
@@ -210,11 +230,11 @@
                 listaResumen.appendChild(liFinanciamiento);
 
             } else {
-                // Si es de contado, regresamos al precio normal
                 document.getElementById('precio-total').innerHTML = `
                     <span style="font-size: 14px; color: #aaa;">Precio de Contado:</span><br>
                     ${formateadorMoneda.format(totalAuto)}
                 `;
+                totalImpresion = formateadorMoneda.format(totalAuto);
             }
         }
 
@@ -297,6 +317,8 @@
             });
 
             scene.add(modeloAuto);
+        }, undefined, function(error) {
+            console.error("Error cargando tesla3.glb:", error);
         });
 
         const controls = new OrbitControls(camera, renderer.domElement);
@@ -305,20 +327,17 @@
 
         // ================= INTERACCIONES DINÁMICAS =================
 
-        // ACTUALIZACIÓN EXTRA: Lógica real de vista en primera persona
         window.cambiarVista = function(tipo) {
             if (tipo === 'exterior') {
                 camera.position.set(5, 2, 6);
-                controls.target.set(0, 0.8, 0); // Apuntar al auto
-                controls.enableZoom = true; // Permite acercarse
-                controls.enablePan = true;  // Permite arrastrar
+                controls.target.set(0, 0.8, 0); 
+                controls.enableZoom = true; 
+                controls.enablePan = true;  
             } else {
-                // Nos sentamos en el asiento del conductor
+                // Coordenadas exactas probadas para la cabina del Model 3
                 camera.position.set(0.35, 1.15, -0.2); 
-                // TRUCO: Ponemos el target a 1 milímetro de la cara para rotar sobre el propio eje
                 controls.target.set(0.35, 1.15, -0.21); 
                 
-                // Bloqueamos movimiento para que el usuario no salga volando por el cristal
                 controls.enableZoom = false; 
                 controls.enablePan = false;
             }
@@ -356,6 +375,8 @@
             materialesInterior.forEach(mat => { mat.color.setHex(colorHex); mat.needsUpdate = true; });
             document.getElementById('btn-int-negro').classList.toggle('activo', colorHex === 0x111111);
             document.getElementById('btn-int-blanco').classList.toggle('activo', colorHex === 0xffffff);
+            document.getElementById('btn-int-beige').classList.toggle('activo', colorHex === 0xd5cabd);
+
             estado.precioInterior = precioAdicional;
             document.getElementById('res-interior').innerText = `Interior: ${nombre}`;
             actualizarPrecioYResumen();
@@ -379,12 +400,91 @@
             actualizarPrecioYResumen();
         };
 
-        // Ejecutar por primera vez para poner todo en 0s
+        // REQUISITO DEL PROFE: Función de impresión de Factura adaptada al Model 3
+        window.generarFactura = function() {
+            const nombre = document.getElementById('f-nombre').value;
+            const correo = document.getElementById('f-correo').value;
+            
+            if (!nombre || !correo) {
+                alert("Por favor ingresa al menos tu Nombre y Correo para generar la factura.");
+                return;
+            }
+
+            const p_pintura = document.getElementById('res-pintura').innerText.split(': ')[1];
+            const p_rines = document.getElementById('res-rines').innerText.split(': ')[1];
+            const p_interior = document.getElementById('res-interior').innerText.split(': ')[1];
+            const t_pago = estado.metodoPago === 'contado' ? 'De Contado' : `Financiamiento (${estado.mesesPlazo} meses al ${estado.porcentajeEnganche*100}% de enganche)`;
+
+            let hojaImpresion = `
+                <html>
+                <head>
+                    <title>Factura Oficial de Compra</title>
+                    <style>
+                        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 40px; color: #333; max-width: 800px; margin: 0 auto; }
+                        .header { border-bottom: 3px solid #e82127; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; }
+                        .logo { font-size: 32px; font-weight: 900; letter-spacing: 2px; color: #000; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 16px; }
+                        th, td { border-bottom: 1px solid #ddd; padding: 15px 10px; text-align: left; }
+                        th { background-color: #f9f9f9; text-transform: uppercase; font-size: 14px; color: #666; }
+                        .total-row { background-color: #000; color: #fff; font-size: 22px; font-weight: bold; }
+                        .info-cliente { margin-bottom: 30px; background: #f4f4f4; padding: 15px; border-radius: 5px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="logo">ADOLFUS AUTOS INC.</div>
+                        <div>
+                            <strong>FACTURA Nº:</strong> ${Math.floor(Math.random() * 90000) + 10000}<br>
+                            <strong>FECHA:</strong> ${new Date().toLocaleDateString('es-MX')}
+                        </div>
+                    </div>
+                    
+                    <div class="info-cliente">
+                        <strong>Datos del Cliente:</strong><br>
+                        Nombre: ${nombre}<br>
+                        Correo: ${correo}<br>
+                        Teléfono: ${document.getElementById('f-telefono').value || 'No especificado'}<br>
+                        Dirección: ${document.getElementById('f-direccion').value || 'No especificada'}
+                    </div>
+
+                    <h2>Detalles del Vehículo Ordenado</h2>
+                    <table>
+                        <tr><th>Concepto</th><th>Descripción</th></tr>
+                        <tr><td>Vehículo Base</td><td>Tesla Model 3 Base</td></tr>
+                        <tr><td>Pintura Exterior</td><td>${p_pintura}</td></tr>
+                        <tr><td>Diseño de Rines</td><td>${p_rines}</td></tr>
+                        <tr><td>Estilo Interior</td><td>${p_interior}</td></tr>
+                        <tr><td>Autopilot</td><td>${estado.precioAutopilot > 0 ? 'Autopilot Avanzado Activado' : 'No Incluido'}</td></tr>
+                        <tr><td>Modalidad de Pago</td><td>${t_pago}</td></tr>
+                        <tr class="total-row"><td>TOTAL A PAGAR:</td><td>${totalImpresion}</td></tr>
+                    </table>
+                    
+                    <p style="margin-top: 50px; text-align: center; font-size: 12px; color: #888;">
+                        Gracias por tu compra. La producción de tu vehículo comenzará al validarse el método de pago.<br>
+                        Adolfus Autos Inc - Configuración Guardada en Sistema.
+                    </p>
+
+                    <script>
+                        window.onload = function() { 
+                            window.print(); 
+                        }
+                    <\/script>
+                </body>
+                </html>
+            `;
+
+            let ventanaPopUp = window.open('', '_blank', 'width=800,height=900');
+            ventanaPopUp.document.write(hojaImpresion);
+            ventanaPopUp.document.close();
+            
+            document.getElementById('modal-factura').style.display = 'none';
+        }
+
+        // Ejecutar por primera vez
         actualizarPrecioYResumen();
 
         function animate() {
             requestAnimationFrame(animate);
-            // Rotamos el auto solo si la cámara está afuera
             if (modeloAuto && document.getElementById('btn-vista-ext').classList.contains('activo')) {
                 modeloAuto.rotation.y += 0.001;
             }
