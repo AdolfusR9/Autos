@@ -15,6 +15,7 @@
             border-radius: 12px; border: 1px solid #333;
             width: 340px; max-height: 85vh; overflow-y: auto;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: opacity 0.3s ease;
         }
 
         h2, h3, p { margin-top: 0; margin-bottom: 10px; }
@@ -52,6 +53,8 @@
         <div class="w3-bar w3-black w3-opacity-min w3-padding">
             <a href="index.html" class="w3-bar-item w3-button w3-xlarge">Adolfus</a>
             <a href="nosotros.html" class="w3-bar-item w3-button w3-xlarge">Nosotros</a>
+            <!-- NUEVO: Botón para ocultar/mostrar el menú lateral -->
+            <button onclick="toggleMenu()" class="w3-bar-item w3-button w3-xlarge w3-right" id="btn-toggle-menu" style="background: transparent;">Ocultar Menú</button>
         </div>
     </div>
 
@@ -65,13 +68,14 @@
             <button class="btn-opcion" id="btn-vista-int" onclick="cambiarVista('interior')">Interior</button>
         </div>
 
+        <!-- COLORES CORREGIDOS PARA MAYOR CONTRASTE -->
         <div class="opcion-grupo">
             <p><strong>Pintura Exterior</strong></p>
-            <div class="color-btn activo" style="background-color: #aaaaaa;" onclick="cambiarPintura(0xaaaaaa, 'Plata Escarlata', 0, this)"></div>
-            <div class="color-btn" style="background-color: #ffffff;" onclick="cambiarPintura(0xffffff, 'Blanco Perla', 0, this)"></div>
-            <div class="color-btn" style="background-color: #8b0000;" onclick="cambiarPintura(0x8b0000, 'Ultra Rojo', 40000, this)"></div>
-            <div class="color-btn" style="background-color: #000033;" onclick="cambiarPintura(0x000033, 'Azul Profundo', 40000, this)"></div>
-            <div class="color-btn" style="background-color: #111111;" onclick="cambiarPintura(0x111111, 'Negro Sólido', 0, this)"></div>
+            <div class="color-btn activo" style="background-color: #777788;" onclick="cambiarPintura(0x777788, 'Plata Escarlata', 0, this)"></div>
+            <div class="color-btn" style="background-color: #f2f2f2;" onclick="cambiarPintura(0xf2f2f2, 'Blanco Perla', 0, this)"></div>
+            <div class="color-btn" style="background-color: #990000;" onclick="cambiarPintura(0x990000, 'Ultra Rojo', 40000, this)"></div>
+            <div class="color-btn" style="background-color: #0033aa;" onclick="cambiarPintura(0x0033aa, 'Azul Profundo', 40000, this)"></div>
+            <div class="color-btn" style="background-color: #050505;" onclick="cambiarPintura(0x050505, 'Negro Sólido', 0, this)"></div>
         </div>
 
         <div class="opcion-grupo">
@@ -80,7 +84,6 @@
             <button class="btn-opcion" id="btn-rin-spt" onclick="cambiarRines('sport', 35000)">Sport Negros 19" (+$35k)</button>
         </div>
 
-        <!-- REQUISITO DEL PROFE: Interior Beige agregado -->
         <div class="opcion-grupo">
             <p><strong>Interior</strong></p>
             <button class="btn-opcion activo" id="btn-int-negro" onclick="cambiarInterior(0x111111, 'Negro Total', 0)">Negro</button>
@@ -135,11 +138,9 @@
             </ul>
         </div>
 
-        <!-- REQUISITO DEL PROFE: Abrir el Modal de datos -->
         <button class="w3-button w3-red w3-round w3-block" onclick="document.getElementById('modal-factura').style.display='block'">Realizar Pedido</button>
     </div>
 
-    <!-- REQUISITO DEL PROFE: MODAL DE FORMULARIO -->
     <div id="modal-factura" class="w3-modal" style="z-index: 100;">
         <div class="w3-modal-content w3-card-4 w3-animate-top" style="max-width:500px; background:#222; color:white; border-radius: 10px; overflow: hidden;">
             <header class="w3-container w3-red">
@@ -174,9 +175,8 @@
         import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
         import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
-        // ================= ESTADO DE LA APLICACIÓN =================
         const estado = {
-            precioBase: 880000, // Precio ajustado para Model 3
+            precioBase: 880000,
             precioPintura: 0,
             precioRines: 0,
             precioInterior: 0,
@@ -184,19 +184,14 @@
             metodoPago: 'contado',
             porcentajeEnganche: 0.20,
             mesesPlazo: 12,
-            tasasInteres: {
-                "12": 0.119, "24": 0.125, "36": 0.132, "48": 0.139, "60": 0.145
-            }
+            tasasInteres: { "12": 0.119, "24": 0.125, "36": 0.132, "48": 0.139, "60": 0.145 }
         };
 
         const formateadorMoneda = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
-        
-        // Variable global para guardar el texto total a cobrar en la factura
         let totalImpresion = "";
 
         function actualizarPrecioYResumen() {
             const totalAuto = estado.precioBase + estado.precioPintura + estado.precioRines + estado.precioInterior + estado.precioAutopilot;
-            
             const listaResumen = document.getElementById('lista-resumen');
             const nodoPrevio = document.getElementById('res-financiero');
             if (nodoPrevio) nodoPrevio.remove();
@@ -210,10 +205,7 @@
                 const pagoMensual = montoFinanciar * ( (tasaMensual * Math.pow(1 + tasaMensual, estado.mesesPlazo)) / (Math.pow(1 + tasaMensual, estado.mesesPlazo) - 1) );
                 const costoTotalCredito = engancheDinero + (pagoMensual * estado.mesesPlazo);
 
-                document.getElementById('precio-total').innerHTML = `
-                    <span style="font-size: 14px; color: #aaa;">Costo Total Financiado:</span><br>
-                    ${formateadorMoneda.format(costoTotalCredito)}
-                `;
+                document.getElementById('precio-total').innerHTML = `<span style="font-size: 14px; color: #aaa;">Costo Total Financiado:</span><br>${formateadorMoneda.format(costoTotalCredito)}`;
                 totalImpresion = formateadorMoneda.format(costoTotalCredito);
 
                 const liFinanciamiento = document.createElement('li');
@@ -228,12 +220,8 @@
                     • <strong style="font-size: 15px;">Mensualidad: ${formateadorMoneda.format(pagoMensual)}</strong>
                 `;
                 listaResumen.appendChild(liFinanciamiento);
-
             } else {
-                document.getElementById('precio-total').innerHTML = `
-                    <span style="font-size: 14px; color: #aaa;">Precio de Contado:</span><br>
-                    ${formateadorMoneda.format(totalAuto)}
-                `;
+                document.getElementById('precio-total').innerHTML = `<span style="font-size: 14px; color: #aaa;">Precio de Contado:</span><br>${formateadorMoneda.format(totalAuto)}`;
                 totalImpresion = formateadorMoneda.format(totalAuto);
             }
         }
@@ -242,7 +230,6 @@
         const materialesInterior = [];
         const materialesRines = [];
 
-        // ================= CONFIGURACIÓN 3D =================
         const container = document.getElementById('canvas-container');
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0xeeeeee);
@@ -278,7 +265,6 @@
         floor.receiveShadow = true;
         scene.add(floor);
 
-        // ================= CARGAR EL AUTO =================
         const loader = new GLTFLoader();
         let modeloAuto;
 
@@ -315,17 +301,27 @@
                     }
                 }
             });
-
             scene.add(modeloAuto);
-        }, undefined, function(error) {
-            console.error("Error cargando tesla3.glb:", error);
         });
 
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.maxPolarAngle = Math.PI / 2 - 0.05; 
 
-        // ================= INTERACCIONES DINÁMICAS =================
+        // ================= FUNCIONES DE INTERFAZ =================
+
+        // NUEVA FUNCIÓN: Mostrar y Ocultar el panel
+        window.toggleMenu = function() {
+            const panel = document.getElementById('config-panel');
+            const btn = document.getElementById('btn-toggle-menu');
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+                btn.innerText = '👁️ Ocultar Menú';
+            } else {
+                panel.style.display = 'none';
+                btn.innerText = '👁️ Mostrar Menú';
+            }
+        };
 
         window.cambiarVista = function(tipo) {
             if (tipo === 'exterior') {
@@ -334,14 +330,11 @@
                 controls.enableZoom = true; 
                 controls.enablePan = true;  
             } else {
-                // Coordenadas exactas probadas para la cabina del Model 3
                 camera.position.set(0.35, 1.15, -0.2); 
                 controls.target.set(0.35, 1.15, -0.21); 
-                
                 controls.enableZoom = false; 
                 controls.enablePan = false;
             }
-            
             document.getElementById('btn-vista-ext').classList.toggle('activo', tipo === 'exterior');
             document.getElementById('btn-vista-int').classList.toggle('activo', tipo === 'interior');
             controls.update();
@@ -376,7 +369,6 @@
             document.getElementById('btn-int-negro').classList.toggle('activo', colorHex === 0x111111);
             document.getElementById('btn-int-blanco').classList.toggle('activo', colorHex === 0xffffff);
             document.getElementById('btn-int-beige').classList.toggle('activo', colorHex === 0xd5cabd);
-
             estado.precioInterior = precioAdicional;
             document.getElementById('res-interior').innerText = `Interior: ${nombre}`;
             actualizarPrecioYResumen();
@@ -400,7 +392,6 @@
             actualizarPrecioYResumen();
         };
 
-        // REQUISITO DEL PROFE: Función de impresión de Factura adaptada al Model 3
         window.generarFactura = function() {
             const nombre = document.getElementById('f-nombre').value;
             const correo = document.getElementById('f-correo').value;
@@ -465,9 +456,7 @@
                     </p>
 
                     <script>
-                        window.onload = function() { 
-                            window.print(); 
-                        }
+                        window.onload = function() { window.print(); }
                     <\/script>
                 </body>
                 </html>
@@ -480,7 +469,6 @@
             document.getElementById('modal-factura').style.display = 'none';
         }
 
-        // Ejecutar por primera vez
         actualizarPrecioYResumen();
 
         function animate() {
