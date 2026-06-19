@@ -15,6 +15,7 @@
             border-radius: 12px; border: 1px solid #333;
             width: 340px; max-height: 85vh; overflow-y: auto;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: opacity 0.3s ease; /* Animación suave al ocultar */
         }
 
         h2, h3, p { margin-top: 0; margin-bottom: 10px; }
@@ -52,6 +53,8 @@
         <div class="w3-bar w3-black w3-opacity-min w3-padding">
             <a href="index.html" class="w3-bar-item w3-button w3-xlarge">Adolfus</a>
             <a href="nosotros.html" class="w3-bar-item w3-button w3-xlarge">Nosotros</a>
+            <!-- NUEVO: Botón para ocultar/mostrar el menú lateral -->
+            <button onclick="toggleMenu()" class="w3-bar-item w3-button w3-xlarge w3-right" id="btn-toggle-menu" style="background: transparent;">👁️ Ocultar Menú</button>
         </div>
     </div>
 
@@ -66,20 +69,18 @@
         </div>
 
         <div class="opcion-grupo">
-            <p><strong>Pintura Exterior</strong></p>
+            <p><strong>Acabado Exterior</strong></p>
             <div class="color-btn activo" style="background-color: #999999;" onclick="cambiarPintura(0xaaaaaa, 0.35, 1.0, 'Acero Inox', 0, this)"></div>
             <div class="color-btn" style="background-color: #111111;" onclick="cambiarPintura(0x111111, 0.8, 0.1, 'Negro Mate', 80000, this)"></div>
             <div class="color-btn" style="background-color: #eeeeee;" onclick="cambiarPintura(0xeeeeee, 0.5, 0.1, 'Blanco Satin', 80000, this)"></div>
         </div>
 
-        <!-- REQUISITO DEL PROFE: Rines -->
         <div class="opcion-grupo">
             <p><strong>Rines</strong></p>
             <button class="btn-opcion activo" id="btn-rin-std" onclick="cambiarRines('estandar', 0)">Cyber 20"</button>
             <button class="btn-opcion" id="btn-rin-spt" onclick="cambiarRines('sport', 45000)">Beast Negros (+$45k)</button>
         </div>
 
-        <!-- REQUISITO DEL PROFE: Interior Beige agregado -->
         <div class="opcion-grupo">
             <p><strong>Interior</strong></p>
             <button class="btn-opcion activo" id="btn-int-negro" onclick="cambiarInterior(0x111111, 'Negro Total', 0)">Negro</button>
@@ -132,11 +133,10 @@
             </ul>
         </div>
 
-        <!-- REQUISITO DEL PROFE: Abrir el Modal de datos -->
         <button class="w3-button w3-red w3-round w3-block" onclick="document.getElementById('modal-factura').style.display='block'">Realizar Pedido</button>
     </div>
 
-    <!-- REQUISITO DEL PROFE: MODAL DE FORMULARIO -->
+    <!-- MODAL DE FORMULARIO DE FACTURA -->
     <div id="modal-factura" class="w3-modal" style="z-index: 100;">
         <div class="w3-modal-content w3-card-4 w3-animate-top" style="max-width:500px; background:#222; color:white; border-radius: 10px; overflow: hidden;">
             <header class="w3-container w3-red">
@@ -174,7 +174,7 @@
         const estado = {
             precioBase: 1600000,
             precioPintura: 0,
-            precioRines: 0, // Añadido Rines
+            precioRines: 0, 
             precioInterior: 0,
             precioAutopilot: 0,
             metodoPago: 'contado',
@@ -184,8 +184,6 @@
         };
 
         const formateadorMoneda = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
-        
-        // Variable global para guardar el texto total a cobrar
         let totalImpresion = "";
 
         function actualizarPrecioYResumen() {
@@ -208,7 +206,7 @@
                     <span style="font-size: 14px; color: #aaa;">Costo Total Financiado:</span><br>
                     ${formateadorMoneda.format(costoTotalCredito)}
                 `;
-                totalImpresion = formateadorMoneda.format(costoTotalCredito); // Guardar para factura
+                totalImpresion = formateadorMoneda.format(costoTotalCredito); 
 
                 const liFinanciamiento = document.createElement('li');
                 liFinanciamiento.id = 'res-financiero';
@@ -228,7 +226,7 @@
                     <span style="font-size: 14px; color: #aaa;">Precio de Contado:</span><br>
                     ${formateadorMoneda.format(totalAuto)}
                 `;
-                totalImpresion = formateadorMoneda.format(totalAuto); // Guardar para factura
+                totalImpresion = formateadorMoneda.format(totalAuto); 
             }
         }
 
@@ -293,7 +291,6 @@
                     let material = Array.isArray(child.material) ? child.material[0] : child.material;
                     let nombreMat = material.name.toLowerCase();
                     
-                    // Atrapar Pintura
                     if (nombreMat.includes('lambert1')) {
                         child.material = material.clone(); 
                         child.material.metalness = 1.0; 
@@ -303,7 +300,6 @@
                         materialesPintura.push(child.material);
                     }
                     
-                    // Atrapar Interior
                     if (nombreMat.includes('seat')) {
                         child.material = material.clone();
                         child.material.map = null; 
@@ -311,7 +307,6 @@
                         materialesInterior.push(child.material);
                     }
 
-                    // Atrapar Rines (Buscamos dark_plastic o tire según tu escaneo original)
                     if (nombreMat.includes('dark_plastic') || nombreMat.includes('tire')) {
                         child.material = material.clone();
                         materialesRines.push(child.material);
@@ -320,6 +315,8 @@
             });
 
             scene.add(modeloAuto);
+        }, undefined, function(error) {
+            console.error("Error cargando la Cybertruck:", error);
         });
 
         const controls = new OrbitControls(camera, renderer.domElement);
@@ -328,7 +325,19 @@
         controls.target.set(0, 3.0, 0); 
         controls.update();
 
-        // ================= FUNCIONES =================
+        // ================= FUNCIONES DE INTERFAZ =================
+
+        window.toggleMenu = function() {
+            const panel = document.getElementById('config-panel');
+            const btn = document.getElementById('btn-toggle-menu');
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+                btn.innerText = '👁️ Ocultar Menú';
+            } else {
+                panel.style.display = 'none';
+                btn.innerText = '👁️ Mostrar Menú';
+            }
+        };
 
         window.cambiarVista = function(tipo) {
             if (tipo === 'exterior') {
@@ -337,7 +346,6 @@
                 controls.enableZoom = true; 
                 controls.enablePan = true;  
             } else {
-                // Posición de la cabina titánica ajustada
                 camera.position.set(0.6, 5.0, 0.2); 
                 controls.target.set(0.6, 5.0, 0.19); 
                 controls.enableZoom = false; 
@@ -376,7 +384,6 @@
             materialesInterior.forEach(mat => { mat.color.setHex(colorHex); mat.needsUpdate = true; });
             document.getElementById('btn-int-negro').classList.toggle('activo', colorHex === 0x111111);
             document.getElementById('btn-int-blanco').classList.toggle('activo', colorHex === 0xffffff);
-            // El color beige se activa si el Hex es el que definimos:
             document.getElementById('btn-int-beige').classList.toggle('activo', colorHex === 0xd5cabd);
             
             estado.precioInterior = precioAdicional;
@@ -402,24 +409,20 @@
             actualizarPrecioYResumen();
         };
 
-        // REQUISITO DEL PROFE: Función de impresión de Factura
         window.generarFactura = function() {
             const nombre = document.getElementById('f-nombre').value;
             const correo = document.getElementById('f-correo').value;
             
-            // Validación básica
             if (!nombre || !correo) {
                 alert("Por favor ingresa al menos tu Nombre y Correo para la factura.");
                 return;
             }
 
-            // Sacamos el texto que está guardado en los menús de resumen
             const p_pintura = document.getElementById('res-pintura').innerText.split(': ')[1];
             const p_rines = document.getElementById('res-rines').innerText.split(': ')[1];
             const p_interior = document.getElementById('res-interior').innerText.split(': ')[1];
             const t_pago = estado.metodoPago === 'contado' ? 'De Contado' : `Financiamiento (${estado.mesesPlazo} meses al ${estado.porcentajeEnganche*100}% de enganche)`;
 
-            // Armamos la estructura de la página a imprimir
             let hojaImpresion = `
                 <html>
                 <head>
@@ -470,21 +473,16 @@
                     </p>
 
                     <script>
-                        // Al cargar esta ventana oculta, manda llamar la caja de impresión
-                        window.onload = function() { 
-                            window.print(); 
-                        }
+                        window.onload = function() { window.print(); }
                     <\/script>
                 </body>
                 </html>
             `;
 
-            // Creamos una ventana nueva y escribimos nuestra hoja adentro
             let ventanaPopUp = window.open('', '_blank', 'width=800,height=900');
             ventanaPopUp.document.write(hojaImpresion);
             ventanaPopUp.document.close();
             
-            // Cerramos el formulario en tu página principal
             document.getElementById('modal-factura').style.display = 'none';
         }
 
