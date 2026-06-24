@@ -421,8 +421,49 @@
             const t_pago = estado.metodoPago === 'contado' ? 'De Contado' : `Financiamiento (${estado.mesesPlazo} meses al ${estado.porcentajeEnganche*100}% de enganche)`;
 
             const filaMensualidad = estado.metodoPago === 'financiamiento' 
-                ? `<tr><td style="color: #e82127; font-weight: bold;">Pago Mensual Estimado</td><td style="color: #e82127; font-weight: bold;">${mensualidadImpresion} MXN</td></tr>` 
+                ? `<tr><td style="color: #e82127; font-weight: bold;">Pago Mensual Fijo</td><td style="color: #e82127; font-weight: bold;">${mensualidadImpresion} MXN</td></tr>` 
                 : '';
+
+            // TABLA DE AMORTIZACIÓN DINÁMICA
+            let tablaAmortizacionHTML = '';
+            if (estado.metodoPago === 'financiamiento') {
+                const totalAuto = estado.precioBase + estado.precioPintura + estado.precioRines + estado.precioInterior + estado.precioAutopilot;
+                const engancheDinero = totalAuto * estado.porcentajeEnganche;
+                let saldoRestante = totalAuto - engancheDinero;
+                const tasaAnual = estado.tasasInteres[estado.mesesPlazo];
+                const tasaMensual = tasaAnual / 12;
+                const pagoMensual = saldoRestante * ( (tasaMensual * Math.pow(1 + tasaMensual, estado.mesesPlazo)) / (Math.pow(1 + tasaMensual, estado.mesesPlazo) - 1) );
+
+                tablaAmortizacionHTML = `
+                    <h3 style="margin-top: 40px; color: #e82127; border-bottom: 2px solid #ccc; padding-bottom: 10px;">Desglose Mensual (Tabla de Amortización)</h3>
+                    <table style="font-size: 13px;">
+                        <tr style="background-color: #f1f1f1;">
+                            <th>Mes</th>
+                            <th>Mensualidad Fija</th>
+                            <th>Interés del Mes</th>
+                            <th>Abono a Capital</th>
+                            <th>Saldo Restante</th>
+                        </tr>
+                `;
+
+                for (let i = 1; i <= estado.mesesPlazo; i++) {
+                    let interesDelMes = saldoRestante * tasaMensual;
+                    let abonoCapital = pagoMensual - interesDelMes;
+                    saldoRestante -= abonoCapital;
+                    if(saldoRestante < 0.1) saldoRestante = 0;
+
+                    tablaAmortizacionHTML += `
+                        <tr>
+                            <td style="font-weight: bold;">${i}</td>
+                            <td>${formateadorMoneda.format(pagoMensual)}</td>
+                            <td style="color: #888;">${formateadorMoneda.format(interesDelMes)}</td>
+                            <td style="color: #4CAF50;">${formateadorMoneda.format(abonoCapital)}</td>
+                            <td>${formateadorMoneda.format(saldoRestante)}</td>
+                        </tr>
+                    `;
+                }
+                tablaAmortizacionHTML += `</table>`;
+            }
 
             let hojaImpresion = `
                 <html>
@@ -432,10 +473,10 @@
                         body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 40px; color: #333; max-width: 800px; margin: 0 auto; }
                         .header { border-bottom: 3px solid #e82127; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; }
                         .logo { font-size: 32px; font-weight: 900; letter-spacing: 2px; color: #000; }
-                        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 16px; }
-                        th, td { border-bottom: 1px solid #ddd; padding: 15px 10px; text-align: left; }
-                        th { background-color: #f9f9f9; text-transform: uppercase; font-size: 14px; color: #666; }
-                        .total-row { background-color: #000; color: #fff; font-size: 22px; font-weight: bold; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 15px; }
+                        th, td { border-bottom: 1px solid #ddd; padding: 12px 10px; text-align: left; }
+                        th { background-color: #f9f9f9; text-transform: uppercase; font-size: 13px; color: #666; }
+                        .total-row { background-color: #000; color: #fff; font-size: 20px; font-weight: bold; }
                         .info-cliente { margin-bottom: 30px; background: #f4f4f4; padding: 15px; border-radius: 5px; }
                     </style>
                 </head>
@@ -466,8 +507,10 @@
                         <tr><td>Software</td><td>${estado.precioAutopilot > 0 ? 'Conducción Autónoma Activada' : 'No Incluido'}</td></tr>
                         <tr><td>Modalidad de Pago</td><td>${t_pago}</td></tr>
                         ${filaMensualidad}
-                        <tr class="total-row"><td>TOTAL A PAGAR:</td><td>${totalImpresion}</td></tr>
+                        <tr class="total-row"><td>TOTAL A PAGAR (CON INTERESES):</td><td>${totalImpresion}</td></tr>
                     </table>
+
+                    ${tablaAmortizacionHTML}
                     
                     <p style="margin-top: 50px; text-align: center; font-size: 12px; color: #888;">
                         Gracias por tu compra. La producción de tu vehículo comenzará al validarse el método de pago.<br>
@@ -481,10 +524,9 @@
                 </html>
             `;
 
-            let ventanaPopUp = window.open('', '_blank', 'width=800,height=900');
+            let ventanaPopUp = window.open('', '_blank', 'width=850,height=1000');
             ventanaPopUp.document.write(hojaImpresion);
             ventanaPopUp.document.close();
-            
             document.getElementById('modal-factura').style.display = 'none';
         }
 
