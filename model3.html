@@ -53,8 +53,7 @@
         <div class="w3-bar w3-black w3-opacity-min w3-padding">
             <a href="index.html" class="w3-bar-item w3-button w3-xlarge">Adolfus</a>
             <a href="nosotros.html" class="w3-bar-item w3-button w3-xlarge">Nosotros</a>
-            <!-- NUEVO: Botón para ocultar/mostrar el menú lateral -->
-            <button onclick="toggleMenu()" class="w3-bar-item w3-button w3-xlarge w3-right" id="btn-toggle-menu" style="background: transparent;">Ocultar Menú</button>
+            <button onclick="toggleMenu()" class="w3-bar-item w3-button w3-xlarge w3-right" id="btn-toggle-menu" style="background: transparent;">👁️ Ocultar Menú</button>
         </div>
     </div>
 
@@ -68,7 +67,6 @@
             <button class="btn-opcion" id="btn-vista-int" onclick="cambiarVista('interior')">Interior</button>
         </div>
 
-        <!-- COLORES CORREGIDOS PARA MAYOR CONTRASTE -->
         <div class="opcion-grupo">
             <p><strong>Pintura Exterior</strong></p>
             <div class="color-btn activo" style="background-color: #777788;" onclick="cambiarPintura(0x777788, 'Plata Escarlata', 0, this)"></div>
@@ -141,6 +139,7 @@
         <button class="w3-button w3-red w3-round w3-block" onclick="document.getElementById('modal-factura').style.display='block'">Realizar Pedido</button>
     </div>
 
+    <!-- MODAL DE FORMULARIO DE FACTURA -->
     <div id="modal-factura" class="w3-modal" style="z-index: 100;">
         <div class="w3-modal-content w3-card-4 w3-animate-top" style="max-width:500px; background:#222; color:white; border-radius: 10px; overflow: hidden;">
             <header class="w3-container w3-red">
@@ -188,7 +187,9 @@
         };
 
         const formateadorMoneda = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
+        
         let totalImpresion = "";
+        let mensualidadImpresion = "";
 
         function actualizarPrecioYResumen() {
             const totalAuto = estado.precioBase + estado.precioPintura + estado.precioRines + estado.precioInterior + estado.precioAutopilot;
@@ -206,7 +207,9 @@
                 const costoTotalCredito = engancheDinero + (pagoMensual * estado.mesesPlazo);
 
                 document.getElementById('precio-total').innerHTML = `<span style="font-size: 14px; color: #aaa;">Costo Total Financiado:</span><br>${formateadorMoneda.format(costoTotalCredito)}`;
+                
                 totalImpresion = formateadorMoneda.format(costoTotalCredito);
+                mensualidadImpresion = formateadorMoneda.format(pagoMensual);
 
                 const liFinanciamiento = document.createElement('li');
                 liFinanciamiento.id = 'res-financiero';
@@ -217,12 +220,13 @@
                     • Enganche: ${formateadorMoneda.format(engancheDinero)} (${estado.porcentajeEnganche * 100}%)<br>
                     • Plazo: ${estado.mesesPlazo} meses<br>
                     • Tasa Anual: ${(tasaAnual * 100).toFixed(1)}%<br>
-                    • <strong style="font-size: 15px;">Mensualidad: ${formateadorMoneda.format(pagoMensual)}</strong>
+                    • <strong style="font-size: 15px;">Mensualidad: ${mensualidadImpresion}</strong>
                 `;
                 listaResumen.appendChild(liFinanciamiento);
             } else {
                 document.getElementById('precio-total').innerHTML = `<span style="font-size: 14px; color: #aaa;">Precio de Contado:</span><br>${formateadorMoneda.format(totalAuto)}`;
                 totalImpresion = formateadorMoneda.format(totalAuto);
+                mensualidadImpresion = "N/A";
             }
         }
 
@@ -310,7 +314,6 @@
 
         // ================= FUNCIONES DE INTERFAZ =================
 
-        // NUEVA FUNCIÓN: Mostrar y Ocultar el panel
         window.toggleMenu = function() {
             const panel = document.getElementById('config-panel');
             const btn = document.getElementById('btn-toggle-menu');
@@ -401,10 +404,15 @@
                 return;
             }
 
+            const modeloAuto = document.querySelector('h2').innerText; 
             const p_pintura = document.getElementById('res-pintura').innerText.split(': ')[1];
             const p_rines = document.getElementById('res-rines').innerText.split(': ')[1];
             const p_interior = document.getElementById('res-interior').innerText.split(': ')[1];
             const t_pago = estado.metodoPago === 'contado' ? 'De Contado' : `Financiamiento (${estado.mesesPlazo} meses al ${estado.porcentajeEnganche*100}% de enganche)`;
+
+            const filaMensualidad = estado.metodoPago === 'financiamiento' 
+                ? `<tr><td style="color: #e82127; font-weight: bold;">Pago Mensual Estimado</td><td style="color: #e82127; font-weight: bold;">${mensualidadImpresion} MXN</td></tr>` 
+                : '';
 
             let hojaImpresion = `
                 <html>
@@ -441,12 +449,13 @@
                     <h2>Detalles del Vehículo Ordenado</h2>
                     <table>
                         <tr><th>Concepto</th><th>Descripción</th></tr>
-                        <tr><td>Vehículo Base</td><td>Tesla Model 3 Base</td></tr>
+                        <tr><td>Vehículo Base</td><td>Tesla ${modeloAuto}</td></tr>
                         <tr><td>Pintura Exterior</td><td>${p_pintura}</td></tr>
                         <tr><td>Diseño de Rines</td><td>${p_rines}</td></tr>
                         <tr><td>Estilo Interior</td><td>${p_interior}</td></tr>
-                        <tr><td>Autopilot</td><td>${estado.precioAutopilot > 0 ? 'Autopilot Avanzado Activado' : 'No Incluido'}</td></tr>
+                        <tr><td>Software</td><td>${estado.precioAutopilot > 0 ? 'Conducción Autónoma Activada' : 'No Incluido'}</td></tr>
                         <tr><td>Modalidad de Pago</td><td>${t_pago}</td></tr>
+                        ${filaMensualidad}
                         <tr class="total-row"><td>TOTAL A PAGAR:</td><td>${totalImpresion}</td></tr>
                     </table>
                     
